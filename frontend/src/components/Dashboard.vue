@@ -241,7 +241,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
-import axios from 'axios'
+import { api } from '../config/api.js'
 import NAVChart from './NAVChart.vue'
 import DCARecommendations from './DCARecommendations.vue'
 
@@ -381,7 +381,7 @@ const isRSILow = computed(() => {
 
 async function loadFunds() {
   try {
-    const response = await axios.get('/api/funds')
+    const response = await api.get('/api/funds')
     funds.value = response.data
   } catch (error) {
     console.error('Error loading funds:', error)
@@ -408,8 +408,8 @@ async function loadFundData() {
     // Try to load data first
     try {
       const [navResponse, analyticsResponse] = await Promise.all([
-        axios.get(`/api/nav/${currentFund}`),
-        axios.get(`/api/analytics/${currentFund}`)
+        api.get(`/api/nav/${currentFund}`),
+        api.get(`/api/analytics/${currentFund}`)
       ])
       
       // Only update if still the same fund (user didn't switch)
@@ -429,7 +429,7 @@ async function loadFundData() {
             return
           }
           
-          await axios.post(`/api/crawl/${currentFund}`)
+          await api.post(`/api/crawl/${currentFund}`)
           // Wait a bit for data to be stored
           await new Promise(resolve => setTimeout(resolve, 500))
           
@@ -441,8 +441,8 @@ async function loadFundData() {
           
           // Retry loading
           const [navResponse, analyticsResponse] = await Promise.all([
-            axios.get(`/api/nav/${currentFund}`),
-            axios.get(`/api/analytics/${currentFund}`)
+            api.get(`/api/nav/${currentFund}`),
+            api.get(`/api/analytics/${currentFund}`)
           ])
           
           // Only update if still the same fund
@@ -478,7 +478,7 @@ async function loadFundData() {
 
 async function loadMeta() {
   try {
-    const res = await axios.get('/api/meta')
+    const res = await api.get('/api/meta')
     meta.value = res.data
   } catch (e) {
     // silent

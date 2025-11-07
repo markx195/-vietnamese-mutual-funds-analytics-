@@ -113,7 +113,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import { api } from '../config/api.js'
 
 const emit = defineEmits(['select-fund'])
 
@@ -143,7 +143,7 @@ function selectFund(fundCode) {
 async function loadRecommendations() {
   loading.value = true
   try {
-    const response = await axios.get('/api/dca/recommendations', {
+    const response = await api.get('/api/dca/recommendations', {
       params: {
         minScore: minScore.value,
         limit: limit.value

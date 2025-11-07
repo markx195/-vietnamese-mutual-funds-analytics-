@@ -10,7 +10,7 @@ import { loadHistory, mergeNavHistory, getFundHistory, getReturn12M } from './st
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
