@@ -1,0 +1,53 @@
+name: Daily NAV Crawl
+
+on:
+  schedule:
+    # Chạy mỗi ngày lúc 9:00 AM UTC (4:00 PM VN time)
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Cho phép chạy thủ công từ GitHub UI
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          cd backend
+          npm install
+      
+      - name: Install Playwright browsers
+        run: |
+          cd backend
+          npx playwright install chromium
+      
+      - name: Run daily crawl
+        run: |
+          cd backend
+          node scripts/daily-crawl.js
+        env:
+          CRAWL_CONCURRENCY: 3
+      
+      - name: Commit and push NAV data
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add backend/storage/nav-history.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-update NAV data [skip ci]"
+            git push
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

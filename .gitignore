@@ -5,7 +5,9 @@ dist/
 *.log
 
 # Backend storage
-backend/storage/nav-history.json
+# Note: nav-history.json is tracked for GitHub Actions to auto-update
+# Uncomment below if you don't want to track it:
+# backend/storage/nav-history.json
 
 # Playwright
 backend/.playwright/
